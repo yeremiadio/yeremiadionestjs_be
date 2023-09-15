@@ -18,7 +18,7 @@ export class UserFilterDto extends QueryParams {
   email: string;
 
   @ApiPropertyOptional({
-    description: 'request created at start',
+    description: 'User created at',
   })
   @IsOptional()
   @IsDateString()
