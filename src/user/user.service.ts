@@ -37,6 +37,18 @@ export class UserService {
     const result = await queryBuilder.getMany();
     return result[0];
   }
+  async getUsers(): Promise<UserEntity[]> {
+    const queryBuilder = this.userRepository.createQueryBuilder('user');
+    queryBuilder.select([
+      'user.id',
+      'user.email',
+      'user.username',
+      'user.createdAt',
+      'user.updatedAt',
+    ]);
+    const result = await queryBuilder.getMany();
+    return result;
+  }
   async getUserById(id: number): Promise<UserEntity> {
     const queryBuilder = this.userRepository.createQueryBuilder('user');
     queryBuilder.select([

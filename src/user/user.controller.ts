@@ -34,6 +34,24 @@ export class UserController {
       message: 'User created successfully',
     };
   }
+  @Get('')
+  @UseInterceptors(TransformResponseInterceptor)
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary: 'Get Users (Authenticated)',
+    description: 'get all user',
+  })
+  @ApiBearerAuth()
+  async getUsers() {
+    const result = await this.userService.getUsers();
+    if (!result) {
+      throw new NotFoundException('User not found');
+    }
+    return {
+      message: USER_MESSAGE_RESPONSE.USER_READ_ALL_SUCCESSFULLY,
+      data: result,
+    };
+  }
   @Get(':id')
   @UseInterceptors(TransformResponseInterceptor)
   @UseGuards(JwtAuthGuard)
