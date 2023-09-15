@@ -8,6 +8,9 @@ import {
 import { User as UserEntity } from './entities';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
+import { UserFilterDto } from './dto/filter-user.dto';
+import { PaginationDto } from 'src/common/dto';
+import { generatePaginationQuery } from 'src/utils/usefulFunctions';
 
 @Injectable()
 export class UserService {
@@ -37,7 +40,7 @@ export class UserService {
     const result = await queryBuilder.getMany();
     return result[0];
   }
-  async getUsers(): Promise<UserEntity[]> {
+  async getUsers(options?: UserFilterDto): Promise<PaginationDto<UserEntity>> {
     const queryBuilder = this.userRepository.createQueryBuilder('user');
     queryBuilder.select([
       'user.id',
@@ -46,7 +49,13 @@ export class UserService {
       'user.createdAt',
       'user.updatedAt',
     ]);
-    const result = await queryBuilder.getMany();
+    if (options.username) {
+      queryBuilder.andWhere(`user.username ilike '%${options.username}%'`);
+    }
+    if (options.email) {
+      queryBuilder.andWhere(`user.email ilike '%${options.email}%'`);
+    }
+    const result = await generatePaginationQuery(queryBuilder, options);
     return result;
   }
   async getUserById(id: number): Promise<UserEntity> {

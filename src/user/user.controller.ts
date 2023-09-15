@@ -5,6 +5,7 @@ import {
   NotFoundException,
   Param,
   Post,
+  Query,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -14,6 +15,7 @@ import { JwtAuthGuard } from 'src/auth/guard';
 import { TransformResponseInterceptor } from 'src/interceptors';
 import { USER_MESSAGE_RESPONSE } from './constants/user.constants';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UserFilterDto } from './dto/filter-user.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -42,8 +44,8 @@ export class UserController {
     description: 'get all user',
   })
   @ApiBearerAuth()
-  async getUsers() {
-    const result = await this.userService.getUsers();
+  async getUsers(@Query() userFilterQuery: UserFilterDto) {
+    const result = await this.userService.getUsers(userFilterQuery);
     if (!result) {
       throw new NotFoundException('User not found');
     }
