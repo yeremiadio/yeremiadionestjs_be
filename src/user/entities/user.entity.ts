@@ -6,6 +6,7 @@ import {
   Entity,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
+import { USER_ROLE } from '../../common/type';
 
 @Entity({ name: 'users' })
 export class User {
@@ -25,6 +26,12 @@ export class User {
     unique: true,
   })
   email: string;
+
+  @Column({
+    type: 'enum',
+    enum: USER_ROLE,
+  })
+  role: USER_ROLE;
 
   @CreateDateColumn()
   createdAt: Date;
